@@ -1,0 +1,49 @@
+# Simple servo check for a Raspberry Pi 5 (SG90 or similar). Signal wire on GPIO 18 (pin 12), red to 5V, brown to GND.
+import time
+import gpiod
+
+PIN = 18
+
+def find_chip():
+    v2 = hasattr(gpiod, "request_lines")
+    for i in range(32):
+        path = f"/dev/gpiochip{i}"
+        try:
+            label = gpiod.Chip(path).get_info().label if v2 else gpiod.Chip(path).label()
+        except Exception:
+            continue
+        if "rp1" in label.lower():
+            return path
+    return "/dev/gpiochip4"
+
+V2 = hasattr(gpiod, "request_lines")
+path = find_chip()
+if V2:
+    from gpiod.line import Direction, Value
+    req = gpiod.request_lines(path, consumer="servo", config={
+        PIN: gpiod.LineSettings(direction=Direction.OUTPUT, output_value=Value.INACTIVE)})
+    write = lambda v: req.set_value(PIN, Value.ACTIVE if v else Value.INACTIVE)
+else:
+    line = gpiod.Chip(path).get_line(PIN)
+    line.request(consumer="servo", type=gpiod.LINE_REQ_DIR_OUT, default_vals=[0])
+    write = lambda v: line.set_value(1 if v else 0)
+
+def move(angle, seconds=1.0):
+    """hold the servo at an angle (0 to 180) for some seconds using 50 Hz pulses"""
+    width = (500 + (2400 - 500) * angle / 180.0) / 1e6      # 0.5 ms to 2.4 ms
+    end = time.time() + seconds
+    while time.time() < end:
+        t0 = time.perf_counter()
+        write(1)
+        while time.perf_counter() - t0 < width:
+            pass
+        write(0)
+        time.sleep(0.020 - (time.perf_counter() - t0))
+
+try:
+    for angle in (90, 0, 90, 180, 90, 0, 90, 180, 90):
+        print("angle", angle)
+        move(angle, 1.0)
+    print("done - the servo should have moved left and right")
+finally:
+    write(0)
