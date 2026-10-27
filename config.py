@@ -7,12 +7,12 @@
 # ---------------- L298N motor driver --------------------------------
 # ENA / IN1 / IN2 -> OUT1/OUT2 -> LEFT motor
 # ENB / IN3 / IN4 -> OUT3/OUT4 -> RIGHT motor
-# (same wiring that was already tested on the bench - no rewiring needed)
+# Number after "=" is the GPIO number. "pin" in the comment is the physical pin.
 ENA = 12   # pin 32  (PWM = left motor speed)
-IN1 = 23   # pin 16
-IN2 = 24   # pin 18
-IN3 = 27   # pin 13
-IN4 = 22   # pin 15
+IN1 = 17   # pin 11
+IN2 = 27   # pin 13
+IN3 = 22   # pin 15
+IN4 = 5    # pin 29
 ENB = 13   # pin 33  (PWM = right motor speed)
 
 PWM_FREQ = 1000      # Hz

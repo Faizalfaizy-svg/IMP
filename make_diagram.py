@@ -127,7 +127,7 @@ wire([(44, 60), (56, 60), (56, 82), (PI_X0, 82)], C["gnd"], 2.4)
 ax.text(45, 87.2, "USB-A -> USB-C cable", color=C["v5"], fontsize=8.5, fontweight="bold")
 
 # motor control pins
-pi_mot = ["GPIO12 (32)", "GPIO23 (16)", "GPIO24 (18)", "GPIO27 (13)", "GPIO22 (15)", "GPIO13 (33)"]
+pi_mot = ["GPIO12 (32)", "GPIO17 (11)", "GPIO27 (13)", "GPIO22 (15)", "GPIO5 (29)", "GPIO13 (33)"]
 pi_mot_y = [57, 54.5, 52, 49.5, 47, 44.5]
 jog = [45, 46.2, 47.4, 48.6, 49.8, 51.0]
 for (yd, yp, jx, lab) in zip(drv_y, pi_mot_y, jog, pi_mot):
